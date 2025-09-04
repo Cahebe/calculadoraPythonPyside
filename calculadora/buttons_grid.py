@@ -1,6 +1,9 @@
 from PySide6.QtWidgets import QPushButton
 from variables import MEDIUM_FONT_SIZE
 from PySide6.QtWidgets import QGridLayout
+from PySide6.QtCore import Slot
+from display import Display
+from utils import is_valid_number
 
 
 class Button(QPushButton):
@@ -17,7 +20,7 @@ class Button(QPushButton):
 
 
 class ButtonsGrid(QGridLayout):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, display: Display, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._grid_mask = [
@@ -27,6 +30,7 @@ class ButtonsGrid(QGridLayout):
             ['1', '2', '3', '+'],
             ['0', '', '.', '='],
         ]
+        self.display = display
         self.make_grid()
 
     def make_grid(self):
@@ -43,3 +47,21 @@ class ButtonsGrid(QGridLayout):
                     button.setProperty('cssClass', '')
 
                 self.addWidget(button, i, j)
+                button_slot = self.button_display_slot(self.insert_button_text_to_display, button)
+                button.clicked.connect(button_slot)
+
+    @staticmethod
+    def button_display_slot(func, *args, **kwargs):
+        @Slot()
+        def real_slot():
+            func(*args, **kwargs)
+
+        return real_slot
+
+    def insert_button_text_to_display(self, button: QPushButton):
+        button_text = button.text()
+        new_display_value = self.display.text() + button_text
+        if not is_valid_number(new_display_value):
+            print('Aperte uma tecla valida')
+        else:
+            self.display.insert(button.text())
