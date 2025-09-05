@@ -1,6 +1,5 @@
 import sys
 
-from buttons_grid import Button
 from display import Display
 from info import Info
 from main_window import MainWindow
@@ -30,7 +29,7 @@ if __name__ == '__main__':
     window.add_to_v_layout(display)
 
     # Grid
-    buttonsGrid = ButtonsGrid(display)
+    buttonsGrid = ButtonsGrid(display, info)
     window.vLayout.addLayout(buttonsGrid)
 
     # Executa tudo

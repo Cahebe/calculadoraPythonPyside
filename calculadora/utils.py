@@ -4,6 +4,6 @@ def is_valid_number(string: str):
     try:
         float(string)
         valid = True
-    except ValueError as e:
+    except ValueError:
         valid = False
     return valid
